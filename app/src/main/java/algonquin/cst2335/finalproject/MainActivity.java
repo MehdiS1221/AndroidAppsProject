@@ -15,12 +15,16 @@ public class MainActivity extends AppCompatActivity {
 
     Button button;
     TextView editName;
+    Button busButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         button = findViewById(R.id.button);
         editName = findViewById(R.id.editTextTextPersonName);
+
+
+
 
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String defaultValue = null;
@@ -48,6 +52,17 @@ public class MainActivity extends AppCompatActivity {
                             .show();
                 })
                     .create().show();
+        });
+
+
+
+
+
+
+        //redirect button to OCTranspo app
+        busButton = findViewById(R.id.busButton);
+        busButton.setOnClickListener(click -> {
+            setContentView(R.layout.octranspobusrouteapp);
         });
     }
 }
