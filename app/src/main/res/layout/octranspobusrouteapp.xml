@@ -7,8 +7,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/busRouteRecyclerView"
-        android:layout_width="484dp"
-        android:layout_height="595dp"
+        android:layout_width="414dp"
+        android:layout_height="599dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
