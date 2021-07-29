@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     .setTitle("Soccer Game News")
                     .setNegativeButton("Cancel", (dialog, cl) -> {
                 })
-                .setPositiveButton("Start Downloding", (dialog, cl) -> {
+                .setPositiveButton("Start Searching", (dialog, cl) -> {
                     Snackbar.make(button, "Downloading the article ", Snackbar.LENGTH_LONG)
                             .setAction("Undo", clk -> {
                             })
