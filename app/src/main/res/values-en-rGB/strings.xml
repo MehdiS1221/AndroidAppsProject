@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">finalproject</string>
+    <string name="add">add</string>
+    <string name="remove">remove</string>
+    <string name="input_bus_stop">input bus stop.</string>
+    <string name="octranspo_app">OCTranspo App</string>
+    <string name="soccer_api">FootBall API</string>
+</resources>

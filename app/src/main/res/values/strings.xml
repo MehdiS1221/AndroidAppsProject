@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FinalProject</string>
+    <string name="add">Add</string>
+    <string name="remove">Remove</string>
+    <string name="input_bus_stop">Input Bus Stop.</string>
+    <string name="octranspo_app">OCTranspo App</string>
+    <string name="soccer_api">Soccer API</string>
 </resources>
