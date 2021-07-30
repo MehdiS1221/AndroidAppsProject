@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -22,8 +23,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class MainActivity extends AppCompatActivity {
     Button search;
     TextView editName;
-    ImageView instructions;
-    Button welcome;
+    Button instructions;
     ProgressBar progressBar;
     RecyclerView articles;
     DrawerLayout drawer;
@@ -36,45 +36,59 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         search = findViewById(R.id.search);
         editName = findViewById(R.id.newsSearch);
-        instructions= findViewById(R.id.instructions);
+
         progressBar= findViewById(R.id.progressBar);
         articles= findViewById(R.id.articles);
         drawer= findViewById(R.id.drawer);
         navigation= findViewById(R.id.navigation);
-        welcome = findViewById(R.id.rate);
+        instructions = findViewById(R.id.instructions);
 
-        welcome.setOnClickListener(click ->
+
+
+        instructions.setOnClickListener(click ->
         {
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Wellcome To Ayham's Sport Games Api please give your rate")
-                    .setPositiveButton("Rate", (dlg, select) -> {
-
-                        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
-                        final RatingBar rating = new RatingBar(this);
-                        rating.setMax(5);
-
-                        popDialog.setIcon(android.R.drawable.btn_star_big_on);
-                        popDialog.setTitle("Add Rating: ");
-                        popDialog.setView(rating);
-                        popDialog.setPositiveButton(android.R.string.ok,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                     dialog.dismiss();
-                                    }
-                                })
-
-                                .setNegativeButton("Cancel",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
-                                            }
-                                        });
-
-                        popDialog.create();
-                        popDialog.show();
-
+                    .setTitle("How to use Soccer Games api.")
+                    .setMessage("To get sport articles related to soccer Games. Just type the name " +
+                            "of the article in the search area, then click search.")
+                    .setPositiveButton("start", (dlg, select) -> {
                     }).show();
         });
+
+        drawer = findViewById(R.id.drawer);
+        navigation = findViewById(R.id.navigation);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected( MenuItem ob) {
+                if (ob.getItemId() == R.id.nav_soccer) {
+                    Toast.makeText(MainActivity.this, "You are using this app", Toast.LENGTH_LONG).show();
+                    return true;
+                } else{
+                    if (ob.getItemId() == R.id.nav_bus)
+                    setContentView(R.layout.octranspobusrouteapp);
+                }
+
+                if (ob.getItemId() == R.id.nav_bus) {
+                    setContentView(R.layout.octranspobusrouteapp);
+                   // Toast.makeText(MainActivity.this,"Now you are in new app" ,Toast.LENGTH_LONG).show();
+                    return true;
+                }else{
+                    if (ob.getItemId() == R.id.nav_soccer)
+                    setContentView(R.layout.activity_main);
+                }
+
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+
 
 
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
@@ -105,15 +119,43 @@ public class MainActivity extends AppCompatActivity {
                     .create().show();
         });
 
-        instructions.setOnClickListener(click ->
-        {
+
+
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("How to use Soccer Games api.")
-                    .setMessage("To get sport articles related to soccer Games. Just type the name " +
-                            "of the article in the search area, then click search.")
-                    .setPositiveButton("start", (dlg, select) -> {
-                  }).show();
-        });
+                    .setTitle("Wellcome To Ayham's Sport Games Api please give your rate")
+                    .setPositiveButton("Rate", (dlg, select) -> {
+
+                        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+                        final RatingBar rating = new RatingBar(this);
+                        rating.setMax(5);
+
+                        popDialog.setIcon(android.R.drawable.btn_star_big_on);
+                        popDialog.setTitle("Add Rating: ");
+                        popDialog.setView(rating);
+                        popDialog.setPositiveButton(android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+
+                                .setNegativeButton("Cancel",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+
+                        popDialog.create();
+                        popDialog.show();
+
+                    }).show();
 
 
     }
