@@ -1,13 +1,13 @@
 package algonquin.cst2335.finalproject;
 
 import android.app.AlertDialog;
-import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,20 +18,30 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class OCTranspoApp extends AppCompatActivity{
     RecyclerView busList;
@@ -43,8 +53,23 @@ public class OCTranspoApp extends AppCompatActivity{
     NavigationView navigationView;
     ImageView questionMark;
     ProgressBar pb;
-
-
+    String routeNo = "";
+    String routeHeadings = "";
+    String appkey = "ab27db5b435b8c8819ffb8095328e775";
+    String appID = "223eb5c3";
+    MyDatabaseHelper mydb;
+    Element routeHeadingEle;
+    Element routeNumEle;
+    Element directionIDEle;
+    String stopNumberForUrl;
+    Element latitudeEle;
+    Element longitudeEle;
+    Element gpsSpeedEle;
+    Element startTimeEle;
+    Element adjustedEle;
+    ArrayList<Integer> directionID;
+    ArrayList<String> routeN;
+    ArrayList<String> destin;
 
 
 
@@ -54,13 +79,23 @@ public class OCTranspoApp extends AppCompatActivity{
 
         setContentView(R.layout.octranspobusrouteapp);
 
-        //progress bar
+        //database helper
 
+        //progress bar
         pb = findViewById(R.id.progressBar2);
 
 
+        //data
+        directionID = new ArrayList<Integer>();
+        routeN = new ArrayList<>();
+        destin = new ArrayList<>();
+        mydb = new MyDatabaseHelper(OCTranspoApp.this);
 
-//question alert
+
+        //customadap
+
+
+        //question alert
         questionMark = findViewById(R.id.imageView2);
         questionMark.setOnClickListener(click ->
         {
@@ -100,6 +135,8 @@ public class OCTranspoApp extends AppCompatActivity{
 
         busList = findViewById(R.id.busRouteRecyclerView);
         busList.setAdapter(new recyclerAdapter());
+        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+
         removeButton = findViewById(R.id.removeButton);
         addButton = findViewById(R.id.addButton);
         busStopEditView = findViewById(R.id.busStopEditText);
@@ -178,23 +215,130 @@ public class OCTranspoApp extends AppCompatActivity{
 
     @Override
     protected Integer doInBackground(Void... voids) {
+//        mydb = new MyDatabaseHelper(OCTranspoApp.this);
 
-        for(int i=0; i<100;i++){
+        SQLiteDatabase db = mydb.getWritableDatabase();
+
+
+
+
+
+        for(int i=0; i<50;i++) {
             publishProgress(i);
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory2 = DocumentBuilderFactory.newInstance();
 
             try{
-                URL url = new URL("https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID={appID}&apiKey={apiKey}&stopNo={stopNo}&format={format}");
+                URL url = new URL("https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID="+appID+"&apiKey="+appkey+"&stopNo="+busStopNumber+"&format={format}");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = httpURLConnection.getInputStream();
-//                BufferedReader
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(inputStream);
+
+                //second url
+//                URL url2 = new URL("https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID="+appID+"&apiKey="+appkey+"&stopNo="+busStopNumber+"&routeNo="+routeNumEle.getTextContent()+"&format={format}");
+//                HttpURLConnection httpURLConnection2 = (HttpURLConnection) url2.openConnection();
+//                InputStream inputStream2 = httpURLConnection2.getInputStream();
+//                DocumentBuilder builder2 = factory2.newDocumentBuilder();
+//                Document doc2 = builder2.parse(inputStream2);
+
+
+
+
+                NodeList routeList = doc.getElementsByTagName("RouteNo");
+                for(int i =0;i<routeList.getLength();i++){
+                    Node p = routeList.item(i);
+                    if(p.getNodeType()==Node.ELEMENT_NODE) {
+                        routeNumEle = (Element) p;
+
+
+
+                    }
+                    NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
+                    Node D = routeHeading.item(i);
+                    if(D.getNodeType()==Node.ELEMENT_NODE){
+                        routeHeadingEle = (Element) D;
+
+
+
+                    }
+
+
+//                    NodeList latitude = doc2.getElementsByTagName("Latitude");
+//                    Node E = latitude.item(i);
+//                    if(E.getNodeType()==Node.ELEMENT_NODE){
+//                        latitudeEle = (Element) E;
+//
+//
+//
+//                    }
+//                    NodeList longitude = doc2.getElementsByTagName("Longitude");
+//                    Node F = longitude.item(i);
+//                    if(F.getNodeType()==Node.ELEMENT_NODE){
+//                        longitudeEle = (Element) F;
+//
+//
+//
+//                    }
+//                    NodeList gpsSpeed = doc2.getElementsByTagName("GPSSpeed");
+//                    Node G = gpsSpeed.item(i);
+//                    if(G.getNodeType()==Node.ELEMENT_NODE){
+//                        gpsSpeedEle = (Element) G;
+//
+//
+//
+//                    }
+//                    NodeList tripStartTime = doc2.getElementsByTagName("TripStartTime");
+//                    Node H = tripStartTime.item(i);
+//                    if(H.getNodeType()==Node.ELEMENT_NODE){
+//                        startTimeEle = (Element) H;
+//
+//
+//
+//                    }
+//                    NodeList adjustedSched = doc2.getElementsByTagName("AdjustedScheduleTime");
+//                    Node I = adjustedSched.item(i);
+//                    if(I.getNodeType()==Node.ELEMENT_NODE){
+//                        adjustedEle = (Element) I;
+//
+//
+//
+//                    }
+
+//,latitudeEle.getTextContent(),longitudeEle.getTextContent(),gpsSpeedEle.getTextContent(),startTimeEle.getTextContent(),adjustedEle.getTextContent()
+
+                    mydb.addBusInfo(i,routeNumEle.getTextContent(),routeHeadingEle.getTextContent());
+
+                }
+
+//                NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
+//                for(int i =0;i<routeHeading.getLength();i++){
+//                    Node p = routeHeading.item(i);
+//                    if(p.getNodeType()==Node.ELEMENT_NODE) {
+//                        Element Route = (Element) p;
+//                        routeHeadings = routeHeadings + Route.getTextContent()+", ";
+//                        mydb.addBusDestination(Route.getTextContent());
+//                    }
+//                }
+
+
+
 
             }catch(MalformedURLException e){
 
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
             }
+        for(int i=50; i<100;i++) {
+            publishProgress(i);
         }
+
         return null;
     }
 
@@ -202,22 +346,32 @@ public class OCTranspoApp extends AppCompatActivity{
     protected void onPostExecute(Integer integer) {
         super.onPostExecute(integer);
         Toast.makeText(getApplicationContext(), "Download finished!", Toast.LENGTH_LONG).show();
-    }
+
+        storeDataInArrays();
+        busList.setAdapter(new recyclerAdapter());
+        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+                }
 }
 
 
 
 
 
-    private class busInfo{
 
-    }
 
     private class myBusRouteViews extends RecyclerView.ViewHolder{
-        TextView busRoutes;
+        TextView busRoutesView;
+        TextView destinationIDView;
+        TextView busRouteNumView;
+
 
         public myBusRouteViews( View itemView) {
             super(itemView);
+            busRoutesView = itemView.findViewById(R.id.busRouteView);
+            destinationIDView = itemView.findViewById(R.id.destinationIDView);
+            busRouteNumView = itemView.findViewById(R.id.routeNo);
+
+
 
 
             //selecting a bus route to see details
@@ -230,7 +384,6 @@ public class OCTranspoApp extends AppCompatActivity{
 
 
 
-            busRoutes = itemView.findViewById(R.id.busRouteView);
         }
     }
 
@@ -239,26 +392,48 @@ public class OCTranspoApp extends AppCompatActivity{
 
 
 
+
+
             @Override
             public myBusRouteViews onCreateViewHolder(ViewGroup parent, int viewType) {
+
                 return new myBusRouteViews(getLayoutInflater().inflate(R.layout.busroute, parent, false));
             }
 
             @Override
             public void onBindViewHolder(myBusRouteViews holder, int position) {
-                holder.busRoutes.setText("");
+                holder.busRoutesView.setText(String.valueOf(destin.get(position)));
+                holder.busRouteNumView.setText(String.valueOf(routeN.get(position)));
+                holder.destinationIDView.setText(String.valueOf(directionID.get(position)));
 
-                myBusRouteViews thisRowLayout = (myBusRouteViews) holder;
-                thisRowLayout.busRoutes.setText("");//here is where we will set the text
+
+
+
 
             }
 
             @Override
             public int getItemCount() {
-                return 0;
+                return destin.size();
             }
 
 
+    }
+    void storeDataInArrays(){
+        Cursor cursor = mydb.readAllData();
+        if(cursor.getCount() == 0){
+            Toast.makeText(this, "No Data", Toast.LENGTH_LONG).show();
+        }else{
+            while(cursor.moveToNext()){
+                directionID.add(cursor.getInt(0));
+                routeN.add(cursor.getString(1));
+                destin.add(cursor.getString(2));
+
+
+
+
+            }
+        }
     }
 
 }

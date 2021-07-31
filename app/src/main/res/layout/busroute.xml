@@ -1,15 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/busRouteView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bus Route Goes Here"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/destinationIDView"
+                android:layout_width="92dp"
+                android:layout_height="46dp"
+                android:layout_marginEnd="12dp"
+                android:text="TextView"
+                android:textSize="30sp"
+
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/busRouteView"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/busRouteView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bus Route Goes Here"
+                android:textSize="19sp"
+                app:layout_constraintStart_toStartOf="@+id/textView16"
+                app:layout_constraintTop_toTopOf="@+id/destinationIDView" />
+
+            <TextView
+                android:id="@+id/routeNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="84dp"
+                android:text="TextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/busRouteView" />
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bus ID:"
+                app:layout_constraintEnd_toStartOf="@+id/destinationIDView"
+                app:layout_constraintTop_toTopOf="@+id/destinationIDView" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Route number:"
+                app:layout_constraintEnd_toStartOf="@+id/routeNo"
+                app:layout_constraintTop_toBottomOf="@+id/busRouteView" />
+
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bus Name:"
+                app:layout_constraintEnd_toStartOf="@+id/busRouteView"
+                app:layout_constraintTop_toTopOf="@+id/busRouteView" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
