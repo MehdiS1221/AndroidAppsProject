@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -43,8 +44,7 @@ public class OCTranspoApp extends AppCompatActivity{
     NavigationView navigationView;
     ImageView questionMark;
     ProgressBar pb;
-
-
+    Intent intent;
 
 
 
@@ -84,16 +84,38 @@ public class OCTranspoApp extends AppCompatActivity{
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected( MenuItem item) {
-                if (item.getItemId() == R.id.nav_bus) {
-                    Toast.makeText(OCTranspoApp.this, "Already in app!", Toast.LENGTH_LONG).show();
+//                if (item.getItemId() == R.id.nav_bus) {
+//                    Toast.makeText(OCTranspoApp.this, "Already in app!", Toast.LENGTH_LONG).show();
+//
+//                    return true;
+//                }else{
+//                    if (item.getItemId() == R.id.nav_bus){
+//                        setContentView(R.layout.octranspobusrouteapp);
+//                        return true;}
+//                }
+//
+//                if (item.getItemId() == R.id.nav_soccer) {
+//                    setContentView(R.layout.activity_main);
+//
+//                    return true;
+//                }else{
+//                    if (item.getItemId() == R.id.nav_soccer) {
+//                        setContentView(R.layout.activity_main);
+//                        return true;}
+//                }
+                switch (item.getItemId()) {
+                    case R.id.nav_bus :
+                        intent = new Intent(OCTranspoApp.this, OCTranspoApp.class);
+                        startActivity(intent);
+                        Toast.makeText(OCTranspoApp.this, "Already in app!", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.nav_soccer :
+                        intent = new Intent(OCTranspoApp.this, MainActivity.class);
+                        startActivity(intent);
 
-                    return true;
+                        break;
                 }
-                if (item.getItemId() == R.id.nav_soccer) {
-                    setContentView(R.layout.activity_main);
 
-                    return true;
-                }
                 return false;
             }
         });

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawer;
     NavigationView navigation;
     TextView textView;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,22 +62,38 @@ public class MainActivity extends AppCompatActivity {
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected( MenuItem ob) {
-                if (ob.getItemId() == R.id.nav_soccer) {
-                    Toast.makeText(MainActivity.this, "You are using this app", Toast.LENGTH_LONG).show();
-                    return true;
-                } else{
-                    if (ob.getItemId() == R.id.nav_bus)
-                    setContentView(R.layout.octranspobusrouteapp);
-                }
+//                if (ob.getItemId() == R.id.nav_soccer) {
+//                    Toast.makeText(MainActivity.this, "You are using this app", Toast.LENGTH_LONG).show();
+//                    return true;
+//                } else{
+//                    if (ob.getItemId() == R.id.nav_bus) {
+//                    setContentView(R.layout.octranspobusrouteapp);
+//                        return true;
+//                    }
+//                }
 
-                if (ob.getItemId() == R.id.nav_bus) {
-                    setContentView(R.layout.octranspobusrouteapp);
-                   // Toast.makeText(MainActivity.this,"Now you are in new app" ,Toast.LENGTH_LONG).show();
-                    return true;
-                }else{
-                    if (ob.getItemId() == R.id.nav_soccer)
-                    setContentView(R.layout.activity_main);
-                }
+//                if (ob.getItemId() == R.id.nav_bus) {
+//                    setContentView(R.layout.octranspobusrouteapp);
+//                   // Toast.makeText(MainActivity.this,"Now you are in new app" ,Toast.LENGTH_LONG).show();
+//                    return true;
+//                }else {
+//                    if (ob.getItemId() == R.id.nav_soccer) {
+//                    setContentView(R.layout.activity_main);
+//                    return true;
+//                    }
+//                }
+            switch (ob.getItemId()) {
+                case R.id.nav_soccer :
+                     intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(MainActivity.this, "You are using this app", Toast.LENGTH_LONG).show();
+                break;
+                case R.id.nav_bus :
+                    intent = new Intent(MainActivity.this, OCTranspoApp.class);
+                    startActivity(intent);
+
+                break;
+            }
 
                 return false;
             }
