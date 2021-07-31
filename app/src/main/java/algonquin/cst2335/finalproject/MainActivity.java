@@ -99,16 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
-
-
-
-
-
-
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String defaultValue = null;
         prefs.getString("VariableName", defaultValue);
@@ -136,45 +126,33 @@ public class MainActivity extends AppCompatActivity {
                 })
                     .create().show();
         });
-
-
-
-
     }
     @Override
     protected void onStart() {
         super.onStart();
-
-            AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Wellcome To Ayham's Sport Games Api please give your rate")
+            AlertDialog dg = new AlertDialog.Builder(this)
+                    .setTitle("Welcome To Ayham's Sport Games Api please put your rate")
                     .setPositiveButton("Rate", (dlg, select) -> {
-
-                        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+                        final AlertDialog.Builder pop = new AlertDialog.Builder(this);
                         final RatingBar rating = new RatingBar(this);
                         rating.setMax(5);
-
-                        popDialog.setIcon(android.R.drawable.btn_star_big_on);
-                        popDialog.setTitle("Add Rating: ");
-                        popDialog.setView(rating);
-                        popDialog.setPositiveButton(android.R.string.ok,
+                        pop.setIcon(android.R.drawable.btn_star_big_on);
+                        pop.setTitle("Add Rating: ");
+                        pop.setView(rating);
+                        pop.setPositiveButton(android.R.string.ok,
                                 new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
+                                    public void onClick(DialogInterface dg, int which) {
+                                        dg.dismiss();
                                     }
                                 })
-
                                 .setNegativeButton("Cancel",
                                         new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.cancel();
+                                            public void onClick(DialogInterface dg, int id) {
+                                                dg.cancel();
                                             }
                                         });
-
-                        popDialog.create();
-                        popDialog.show();
-
+                        pop.create();
+                        pop.show();
                     }).show();
-
-
     }
 }
