@@ -82,23 +82,25 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/articles"
             android:layout_width="382dp"
             android:layout_height="228dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBar" />
-
 
         <Button
             android:id="@+id/search"
             android:layout_width="137dp"
             android:layout_height="46dp"
             android:text="@string/Search"
+            android:onClick="showMeResult"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.102"
@@ -131,6 +133,7 @@
             app:layout_constraintStart_toStartOf="@+id/search"
             app:layout_constraintTop_toBottomOf="@+id/newsSearch"
             app:layout_constraintVertical_bias="0.757" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
