@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView articles;
     DrawerLayout drawer;
     NavigationView navigation;
-    TextView textView;
     Intent intent;
 
     @Override
@@ -38,20 +37,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         search = findViewById(R.id.search);
         editName = findViewById(R.id.newsSearch);
-
         progressBar= findViewById(R.id.progressBar);
         articles= findViewById(R.id.articles);
         drawer= findViewById(R.id.drawer);
         navigation= findViewById(R.id.navigation);
         instructions = findViewById(R.id.instructions);
 
-
-
         instructions.setOnClickListener(click ->
         {
             AlertDialog dialog = new AlertDialog.Builder(this)
                     .setTitle("How to use Soccer Games api.")
-                    .setMessage("To get sport articles related to soccer Games. Just type the name " +
+                    .setMessage("To get any sport articles related to soccer Games. Just type the name " +
                             "of the article in the search area, then click search.")
                     .setPositiveButton("start", (dlg, select) -> {
                     }).show();

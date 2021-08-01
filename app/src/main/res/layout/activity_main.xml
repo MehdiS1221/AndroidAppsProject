@@ -98,7 +98,7 @@
             android:id="@+id/search"
             android:layout_width="137dp"
             android:layout_height="46dp"
-            android:text="Search"
+            android:text="@string/Search"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.102"
