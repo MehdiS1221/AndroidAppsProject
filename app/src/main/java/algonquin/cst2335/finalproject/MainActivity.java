@@ -19,7 +19,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 /**
- * This Program is for searching Soccer news.
+ * This Program is for searching Soccer game news.
  * @author Ayham Alahmed
  * @version 1
  */
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     String iconName;
 
     /**
-     * This method has help button and navigation bar and article search function.
+     * This method has help button, navigation bar and article search function.
      * @param savedInstanceState is savedInstanceState.
      */
 
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 /**
- * this is for saving the enter title of the article.
+ * this is for saving the entered title of the article.
  */
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String defaultValue = null;
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setMessage("Welcome To sport News")
-                    .setTitle("Soccer Game News")
+                    .setTitle("Soccer Game api")
                     .setNegativeButton("Cancel", (dialog, cl) -> {
                 })
                 .setPositiveButton("Start Searching", (dialog, cl) -> {
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
              */
 
             AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Sport News")
+                    .setTitle("Soccer Game api")
                     .setMessage("We are searching for some sport article news")
                     .setView(new ProgressBar(MainActivity.this))
                     .show();
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 //                   textView.setText("The title is " + title);
 //                   textView.setVisibility(View.VISIBLE);
 //
-//                    textView = findViewById(R.id.date);
+//                   textView = findViewById(R.id.date);
 //                   textView.setText("The date is " + date);
 //                   textView.setVisibility(View.VISIBLE);
 //

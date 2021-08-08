@@ -60,7 +60,6 @@
                     android:layout_marginEnd="32dp"
                     android:text="@string/help"
                     android:textColor="#ffff66"
-
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/toolbar"
                     app:layout_constraintStart_toStartOf="@+id/toolbar"
@@ -137,14 +136,11 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation"
-
         android:layout_gravity="start"
-
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_menu"
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
-
         tools:ignore="MissingConstraints" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
