@@ -32,7 +32,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-
+/**
+ * This handles the fragment and its associated data
+ */
 public class TopFragment extends Fragment {
 
     Button returnbb;
@@ -105,6 +107,9 @@ public class TopFragment extends Fragment {
         return v;
     }
 
+    /**
+     * This executes the code to retrieve the data from the url
+     */
     class Downloader2 extends AsyncTask<Void, Integer, Integer> {
 
         @Override
@@ -126,43 +131,16 @@ public class TopFragment extends Fragment {
             DocumentBuilderFactory factory2 = DocumentBuilderFactory.newInstance();
 
             try {
-//            URL url = new URL("https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID="+appID+"&apiKey="+appkey+"&stopNo="+busStopNumber+"&format={format}");
-//            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-//            InputStream inputStream = httpURLConnection.getInputStream();
-//            DocumentBuilder builder = factory.newDocumentBuilder();
-//            Document doc = builder.parse(inputStream);
 
-                //second url
                 URL url2 = new URL("https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID=" + appID + "&apiKey=" + appkey + "&stopNo=" + busStopNumber + "&routeNo=" + routeNo + "&format={format}");
                 HttpURLConnection httpURLConnection2 = (HttpURLConnection) url2.openConnection();
                 InputStream inputStream2 = httpURLConnection2.getInputStream();
                 DocumentBuilder builder2 = factory2.newDocumentBuilder();
                 Document doc2 = builder2.parse(inputStream2);
 
-
-//
-//            NodeList routeList = doc.getElementsByTagName("RouteNo");
                 NodeList latitude = doc2.getElementsByTagName("Latitude");
 
-//                for (int i = 0; i < latitude.getLength(); i++) {
-//                Node p = routeList.item(i);
-//                if(p.getNodeType()==Node.ELEMENT_NODE) {
-//                    routeNumEle = (Element) p;
-//
-//
-//
-//                }
-//                NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
-//                Node D = routeHeading.item(i);
-//                if(D.getNodeType()==Node.ELEMENT_NODE){
-//                    routeHeadingEle = (Element) D;
-//
-//
-//
-//                }
 
-
-//                    NodeList latitude = doc2.getElementsByTagName("Latitude");
                     Node E = latitude.item(0);
                     if (E.getNodeType() == Node.ELEMENT_NODE) {
                         latitudeEle = (Element) E;
@@ -198,21 +176,7 @@ public class TopFragment extends Fragment {
 
                     }
 
-//,latitudeEle.getTextContent(),longitudeEle.getTextContent(),gpsSpeedEle.getTextContent(),startTimeEle.getTextContent(),adjustedEle.getTextContent()
 
-//                mydb.addBusInfo(i,routeNumEle.getTextContent(),routeHeadingEle.getTextContent());
-
-               // }
-
-//                NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
-//                for(int i =0;i<routeHeading.getLength();i++){
-//                    Node p = routeHeading.item(i);
-//                    if(p.getNodeType()==Node.ELEMENT_NODE) {
-//                        Element Route = (Element) p;
-//                        routeHeadings = routeHeadings + Route.getTextContent()+", ";
-//                        mydb.addBusDestination(Route.getTextContent());
-//                    }
-//                }
 
 
             } catch (MalformedURLException e) {

@@ -84,7 +84,7 @@ public class OCTranspoApp extends AppCompatActivity{
 
         setContentView(R.layout.octranspobusrouteapp);
 
-        //database helper
+
 
         //progress bar
         pb = findViewById(R.id.progressBar2);
@@ -97,7 +97,7 @@ public class OCTranspoApp extends AppCompatActivity{
         mydb = new MyDatabaseHelper(OCTranspoApp.this);
 
 
-        //customadap
+
 
 
         //question alert
@@ -122,6 +122,12 @@ public class OCTranspoApp extends AppCompatActivity{
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            /**
+             * allows for items within the navigation view to be selected and have functionality
+             * @param item
+             * @return
+             */
             @Override
             public boolean onNavigationItemSelected( MenuItem item) {
                 if (item.getItemId() == R.id.nav_bus) {
@@ -150,7 +156,7 @@ public class OCTranspoApp extends AppCompatActivity{
 
 
 
-
+//shared preferences
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String defaultValue = null;
         prefs.getString("VariableName", defaultValue);
@@ -186,16 +192,6 @@ public class OCTranspoApp extends AppCompatActivity{
                         recyclerAdapter recyclerAdapters = new recyclerAdapter();
                         recyclerAdapters.notifyDataSetChanged();
                         busList.setVisibility(View.INVISIBLE);
-//                        directionID.clear();
-//                        routeN.clear();
-//                        destin.clear();
-//                        recyclerAdapter recyclerAdapter = new recyclerAdapter();
-//                        recyclerAdapter.notifyDataSetChanged();
-
-
-//                        myBusRouteViewss = new myBusRouteViews(busList);
-//                        myBusRouteViewss.notifyDataSetChanged();
-
 
 
 
@@ -236,6 +232,9 @@ public class OCTranspoApp extends AppCompatActivity{
 
                 }
 
+    /**
+     * queries the octranspo web server to obtain the bus info and input into database
+     */
                 class Downloader extends AsyncTask<Void, Integer, Integer> {
 
     @Override
@@ -304,62 +303,12 @@ public class OCTranspoApp extends AppCompatActivity{
                     }
 
 
-//                    NodeList latitude = doc2.getElementsByTagName("Latitude");
-//                    Node E = latitude.item(i);
-//                    if(E.getNodeType()==Node.ELEMENT_NODE){
-//                        latitudeEle = (Element) E;
-//
-//
-//
-//                    }
-//                    NodeList longitude = doc2.getElementsByTagName("Longitude");
-//                    Node F = longitude.item(i);
-//                    if(F.getNodeType()==Node.ELEMENT_NODE){
-//                        longitudeEle = (Element) F;
-//
-//
-//
-//                    }
-//                    NodeList gpsSpeed = doc2.getElementsByTagName("GPSSpeed");
-//                    Node G = gpsSpeed.item(i);
-//                    if(G.getNodeType()==Node.ELEMENT_NODE){
-//                        gpsSpeedEle = (Element) G;
-//
-//
-//
-//                    }
-//                    NodeList tripStartTime = doc2.getElementsByTagName("TripStartTime");
-//                    Node H = tripStartTime.item(i);
-//                    if(H.getNodeType()==Node.ELEMENT_NODE){
-//                        startTimeEle = (Element) H;
-//
-//
-//
-//                    }
-//                    NodeList adjustedSched = doc2.getElementsByTagName("AdjustedScheduleTime");
-//                    Node I = adjustedSched.item(i);
-//                    if(I.getNodeType()==Node.ELEMENT_NODE){
-//                        adjustedEle = (Element) I;
-//
-//
-//
-//                    }
 
-//,latitudeEle.getTextContent(),longitudeEle.getTextContent(),gpsSpeedEle.getTextContent(),startTimeEle.getTextContent(),adjustedEle.getTextContent()
 
                     mydb.addBusInfo(i,routeNumEle.getTextContent(),routeHeadingEle.getTextContent());
 
                 }
 
-//                NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
-//                for(int i =0;i<routeHeading.getLength();i++){
-//                    Node p = routeHeading.item(i);
-//                    if(p.getNodeType()==Node.ELEMENT_NODE) {
-//                        Element Route = (Element) p;
-//                        routeHeadings = routeHeadings + Route.getTextContent()+", ";
-//                        mydb.addBusDestination(Route.getTextContent());
-//                    }
-//                }
 
 
 
@@ -394,11 +343,9 @@ public class OCTranspoApp extends AppCompatActivity{
 }
 
 
-
-
-
-
-
+    /**
+     * inserts the items into the recyclerview
+     */
     private class myBusRouteViews extends RecyclerView.ViewHolder{
         TextView busRoutesView;
         TextView destinationIDView;
@@ -431,7 +378,9 @@ public class OCTranspoApp extends AppCompatActivity{
         }
     }
 
-
+    /**
+     * creates recyclerview
+     */
     private class recyclerAdapter extends RecyclerView.Adapter<myBusRouteViews>{
 
 
@@ -463,6 +412,10 @@ public class OCTranspoApp extends AppCompatActivity{
 
 
     }
+
+    /**
+     * stores data into arrays
+     */
     void storeDataInArrays(){
         Cursor cursor = mydb.readAllData();
         if(cursor.getCount() == 0){
@@ -480,26 +433,53 @@ public class OCTranspoApp extends AppCompatActivity{
         }
     }
 
+    /**
+     * get row adapter for selected item
+     * @return
+     */
     public int getRowAdapter(){
 
 
         return staticRowAdapter;
     }
+
+    /**
+     * get apikey
+     * @return
+     */
     public String getKey(){
         String key = this.appkey;
         return key;
     }
+
+    /**
+     * get api number
+     * @return
+     */
     public String getApi(){
         String api = appID;
         return api;
     }
+
+    /**
+     * get the bus stop number in edittext
+     * @return
+     */
     public String getBusStopNumber(){
 
         return busstopnumberstatic;
     }
+
+    /**
+     * set the bus stop number
+     */
     public void setBusStopNumber(){
         busstopnumberstatic = this.busStopNumber;
     }
+
+    /**
+     * set the row adapter
+     */
     public void setRowAdapter(){
         staticRowAdapter = this.rowAdapter;
 

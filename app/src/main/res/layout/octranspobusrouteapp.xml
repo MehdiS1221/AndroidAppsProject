@@ -37,7 +37,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:title="  OCTranspo App"
+                app:title="Mehdi's App V1             OCTranspo"
                 app:titleTextColor="#ffff" />
 
             <!-- Right most TextView -->
