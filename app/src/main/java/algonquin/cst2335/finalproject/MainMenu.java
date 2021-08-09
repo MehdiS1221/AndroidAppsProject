@@ -36,11 +36,16 @@ public class MainMenu extends AppCompatActivity {
             Intent intent = new Intent(MainMenu.this, MainActivity.class);
             startActivity(intent);
         });
+        electricMenuButton.setOnClickListener(click ->{
+            Intent intent = new Intent(MainMenu.this, MainActivityCarCharging.class);
+            startActivity(intent);
 
         movieMenuButton.setOnClickListener(v -> {
             startActivity(new Intent(this, MoviesSplashActivity.class));
         });
 
+
+        });
 
     }
 
