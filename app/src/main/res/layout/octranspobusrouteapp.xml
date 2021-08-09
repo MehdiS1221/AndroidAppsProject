@@ -89,6 +89,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            >-->
+
+<!--        <fragment-->
+<!--            android:id="@+id/topFragment"-->
+<!--            android:name="algonquin.cst2335.finalproject.TopFragment"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            />-->
+<!--    </RelativeLayout>-->
+
 
     <Button
         android:id="@+id/addButton"
@@ -127,6 +141,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="133dp"
             android:layout_height="34dp"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/busStopEditText" />

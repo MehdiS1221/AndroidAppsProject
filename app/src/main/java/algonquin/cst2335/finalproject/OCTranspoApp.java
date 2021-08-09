@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -55,8 +55,10 @@ public class OCTranspoApp extends AppCompatActivity{
     ProgressBar pb;
     String routeNo = "";
     String routeHeadings = "";
-    String appkey = "ab27db5b435b8c8819ffb8095328e775";
-    String appID = "223eb5c3";
+    static String appkey = "ab27db5b435b8c8819ffb8095328e775";
+    static String appID = "223eb5c3";
+    static String busstopnumberstatic;
+    static int staticRowAdapter;
     MyDatabaseHelper mydb;
     Element routeHeadingEle;
     Element routeNumEle;
@@ -67,9 +69,12 @@ public class OCTranspoApp extends AppCompatActivity{
     Element gpsSpeedEle;
     Element startTimeEle;
     Element adjustedEle;
+    int rowAdapter;
     ArrayList<Integer> directionID;
     ArrayList<String> routeN;
     ArrayList<String> destin;
+    myBusRouteViews myBusRouteViewss;
+
 
 
 
@@ -161,11 +166,42 @@ public class OCTranspoApp extends AppCompatActivity{
             busStopNumber = busStopEditView.getText().toString();
 
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Delete bus stop?")
+                    .setTitle("Clear bus stop list?")
                     .setMessage("Do you want to delete the bus stop number " + busStopNumber + " ?")
                     .setPositiveButton("Yes", (dlg, select) -> {//here to delete bus stop
 
-                        Snackbar.make(addButton, "You deleted message #" + busStopNumber, Snackbar.LENGTH_LONG)
+                        mydb.deleteData();
+
+                        storeDataInArrays();
+
+
+                        busList.setAdapter(new recyclerAdapter());
+                        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+
+
+
+
+
+
+                        recyclerAdapter recyclerAdapters = new recyclerAdapter();
+                        recyclerAdapters.notifyDataSetChanged();
+                        busList.setVisibility(View.INVISIBLE);
+//                        directionID.clear();
+//                        routeN.clear();
+//                        destin.clear();
+//                        recyclerAdapter recyclerAdapter = new recyclerAdapter();
+//                        recyclerAdapter.notifyDataSetChanged();
+
+
+//                        myBusRouteViewss = new myBusRouteViews(busList);
+//                        myBusRouteViewss.notifyDataSetChanged();
+
+
+
+
+
+
+                        Snackbar.make(addButton, "You deleted bus stop " + busStopNumber + " from the list", Snackbar.LENGTH_LONG)
                                 .setAction("undo", clk -> {//undo button
 
                                 }).show();
@@ -180,13 +216,15 @@ public class OCTranspoApp extends AppCompatActivity{
 
         });
         addButton.setOnClickListener(click -> {
+
+            busList.setVisibility(View.VISIBLE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("Name", busStopEditView.getText().toString());
             editor.apply();
 
 
             busStopNumber = busStopEditView.getText().toString();
-
+            setBusStopNumber();
             Toast toast = Toast.makeText(this, "Added bus stop "+busStopNumber+".", Toast.LENGTH_LONG);
             toast.show();
             new Downloader().execute();
@@ -203,6 +241,7 @@ public class OCTranspoApp extends AppCompatActivity{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        pb.setVisibility(View.VISIBLE);
         pb.setMax(100);
     }
 
@@ -337,6 +376,7 @@ public class OCTranspoApp extends AppCompatActivity{
             }
         for(int i=50; i<100;i++) {
             publishProgress(i);
+            pb.setVisibility(View.INVISIBLE);
         }
 
         return null;
@@ -367,6 +407,7 @@ public class OCTranspoApp extends AppCompatActivity{
 
         public myBusRouteViews( View itemView) {
             super(itemView);
+
             busRoutesView = itemView.findViewById(R.id.busRouteView);
             destinationIDView = itemView.findViewById(R.id.destinationIDView);
             busRouteNumView = itemView.findViewById(R.id.routeNo);
@@ -376,9 +417,12 @@ public class OCTranspoApp extends AppCompatActivity{
 
             //selecting a bus route to see details
             itemView.setOnClickListener(click -> {
-                int row = getAdapterPosition();
+                rowAdapter = getAdapterPosition();
+                setRowAdapter();
+                TopFragment topFragment = new TopFragment();
+                FragmentManager manager = getSupportFragmentManager();
 
-
+                manager.beginTransaction().add(R.id.drawerLayout, topFragment).commit();
 
             });
 
@@ -435,6 +479,32 @@ public class OCTranspoApp extends AppCompatActivity{
             }
         }
     }
+
+    public int getRowAdapter(){
+
+
+        return staticRowAdapter;
+    }
+    public String getKey(){
+        String key = this.appkey;
+        return key;
+    }
+    public String getApi(){
+        String api = appID;
+        return api;
+    }
+    public String getBusStopNumber(){
+
+        return busstopnumberstatic;
+    }
+    public void setBusStopNumber(){
+        busstopnumberstatic = this.busStopNumber;
+    }
+    public void setRowAdapter(){
+        staticRowAdapter = this.rowAdapter;
+
+    }
+
 
 }
 

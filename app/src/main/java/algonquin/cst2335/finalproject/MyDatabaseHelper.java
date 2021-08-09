@@ -210,4 +210,13 @@ class MyDatabaseHelper extends SQLiteOpenHelper {
         }
         return cursor;
     }
+
+
+    public void deleteData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+
+    }
+
 }
