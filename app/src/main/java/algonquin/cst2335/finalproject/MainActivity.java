@@ -3,20 +3,59 @@ package algonquin.cst2335.finalproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * This Program is for searching Soccer game news.
@@ -28,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
      * Button search this is for search button.
      * TextView editName finding the title.
      * Button instructions this is for help.
+     * Button author this is for showing the author name and the version number.
      * RecyclerView articles this is for showing the retrieve data.
      * DrawerLayout drawer this is for tool bar
      * NavigationView navigation to go to another activity.
@@ -37,8 +77,12 @@ public class MainActivity extends AppCompatActivity {
      * String iconName article image
      */
     Button search;
+    /**
+     * TextView editName finding the title.
+     */
     TextView editName;
     Button instructions;
+    Button author;
     ProgressBar progressBar;
     RecyclerView articles;
     DrawerLayout drawer;
@@ -65,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = findViewById(R.id.drawer);
         navigation = findViewById(R.id.navigation);
         instructions = findViewById(R.id.instructions);
+        author= findViewById(R.id.author);
 /**
  * This is for help and will show the user how can use this app.
  */
@@ -76,6 +121,17 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage("To get any sport articles related to soccer Games. Just type the name " +
                             "of the article in the search area, then click search.")
                     .setPositiveButton("start", (dlg, select) -> {
+                    }).show();
+        });
+/**
+ * this is for showing the author name and the version number.
+ */
+        author.setOnClickListener(click ->
+        {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle("Author: Ayham Alahmed")
+                    .setMessage("Version:1")
+                    .setPositiveButton("ok", (dlg, select) -> {
                     }).show();
         });
 /**
@@ -147,86 +203,80 @@ public class MainActivity extends AppCompatActivity {
                     .setMessage("We are searching for some sport article news")
                     .setView(new ProgressBar(MainActivity.this))
                     .show();
+
+//            Executor newThread = Executors.newSingleThreadExecutor();
+//            newThread.execute(() -> {
+//                        try {
+//                            String articleName = cityNameEditText.getText().toString();
+//                            String serverURL = "http://www.goal.com/en/feeds/news?fmt=rss";
+//                            URL url = new URL(serverURL);
+//                            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//                            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+//                            String text = (new BufferedReader(
+//                                    new InputStreamReader(in, StandardCharsets.UTF_8)))
+//                                    .lines()
+//                                    .collect(Collectors.joining("\n"));
+//                            JSONObject theDocument = new JSONObject(text);
+//                            JSONObject coord = theDocument.getJSONObject("coord");
+//                            JSONArray articleArray = theDocument.getJSONArray("article");
+//                            JSONObject position0 = weatherArray.getJSONObject(0);
 //
-//        Executor newThread = Executors.newSingleThreadExecutor();
-//        newThread.execute(() -> {
-//            try {
-//                String serverURL = "http://www.goal.com/en/feeds/news?fmt=rss"
 //
-//                URL url = new URL(serverURL);
-//                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-//                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+//                            String iconName = position0.getString("icon");
+//                            int vis = theDocument.getInt("visibility");
+//                            String name = theDocument.getString("name");
 //
-//                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-//                factory.setNamespaceAware(false);
-//                XmlPullParser xpp = factory.newPullParser();
-//                xpp.setInput(in, "UTF-8");
 //
-//                while (xpp.next() != XmlPullParser.END_DOCUMENT) {
-//                    switch (xpp.getEventType()) {
-//                        case XmlPullParser.START_TAG:
-//                            if (xpp.getName().equals("title")) {
-//                                title = xpp.getAttributeValue(null, "title");
-//                                date = xpp.getAttributeValue(null, "date");
+//                            JSONObject mainObject = theDocument.getJSONObject("main");
+//                              title = mainObject.getDouble("title");
+//                              date = mainObject.getDouble("date");
 //
-//                            } else if (xpp.getName().equals("sport")) {
-//                                iconName = xpp.getAttributeValue(null, "icon");
+//                            Bitmap image = null;
+//                            File file = new File(getFilesDir(), iconName + ".png");
+//                            if (file.exists()) {
+//                                image = BitmapFactory.decodeFile(getFilesDir() + "/" + iconName + ".png");
+//                            } else {
+//                                URL imgUrl = new URL("http://www.goal.com/en/feeds/news?fmt=rss" + iconName + ".png");
+//                                HttpURLConnection connection = (HttpURLConnection) imgUrl.openConnection();
+//                                connection.connect();
+//                                int responseCode = connection.getResponseCode();
+//                                if (responseCode == 200) {
+//                                    image = BitmapFactory.decodeStream(connection.getInputStream());
+//                                    image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput(iconName + ".png", Activity.MODE_PRIVATE));
+//                                    ImageView imageView = findViewById(R.id.icon);
+//                                    imageView.setImageBitmap(image);
+//                                }
 //                            }
-//                            break;
+//                            Bitmap finalImage = image;
+//                            Bitmap finalImage1 = image;
+//                            runOnUiThread(() -> {
+//                                TextView textView = findViewById(R.id.title);
+//                                textView.setText("The title is " + title);
+//                                textView.setVisibility(View.VISIBLE);
 //
-//                        case XmlPullParser.END_TAG:
-//                            break;
-//                        case XmlPullParser.TEXT:
-//                            break;
-//                    }
-//
-//                }
-//                Bitmap image = null;
-//                File file = new File(getFilesDir(), iconName + ".png");
-//                if (file.exists()) {
-//                    image = BitmapFactory.decodeFile(getFilesDir() + "/" + iconName + ".png");
-//                } else {
-//                    URL imgUrl = new URL("http://www.goal.com/en/feeds/news?fmt=rss" + iconName + ".png");
-//                    HttpURLConnection connection = (HttpURLConnection) imgUrl.openConnection();
-//                    connection.connect();
-//                    int responseCode = connection.getResponseCode();
-//                    if (responseCode == 200) {
-//                        image = BitmapFactory.decodeStream(connection.getInputStream());
-//                        image.compress(Bitmap.CompressFormat.PNG, 100, openFileOutput(iconName + ".png", Activity.MODE_PRIVATE));
-//                        ImageView imageView = findViewById(R.id.icon);
-//                        imageView.setImageBitmap(image);
-//                    }
-//                }
-//
-//                Bitmap finalImage = image;
-//                Bitmap finalImage1 = image;
-//                runOnUiThread(() -> {
-//                   TextView textView = findViewById(R.id.title);
-//                   textView.setText("The title is " + title);
-//                   textView.setVisibility(View.VISIBLE);
-//
-//                   textView = findViewById(R.id.date);
-//                   textView.setText("The date is " + date);
-//                   textView.setVisibility(View.VISIBLE);
+//                                textView = findViewById(R.id.date);
+//                                textView.setText("The Minimum Temperature is " + date);
+//                                textView.setVisibility(View.VISIBLE);
 //
 //
-//                    ImageView imageView = findViewById(R.id.icon);
-//                    imageView.setImageBitmap(finalImage);
-//                    imageView.setVisibility(View.VISIBLE);
-//                    imageView.setImageBitmap(finalImage1);
-//                    dialog.hide();
-//                });
 //
-//                FileOutputStream fOut = null;
-//                fOut = openFileOutput(iconName + ".png", Context.MODE_PRIVATE);
-//                image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-//                fOut.flush();
-//                fOut.close();
+//                                ImageView imageView = findViewById(R.id.icon);
+//                                imageView.setImageBitmap(finalImage);
+//                                imageView.setVisibility(View.VISIBLE);
+//                                imageView.setImageBitmap(finalImage1);
 //
-//            } catch (IOException | XmlPullParserException ieo) {
-//                Log.e("Connection error:", ieo.getMessage());
-//            }
-//        });
+//                            });
+//
+//                            FileOutputStream fOut = null;
+//                            fOut = openFileOutput(iconName + ".png", Context.MODE_PRIVATE);
+//                            image.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+//                            fOut.flush();
+//                            fOut.close();
+//
+//                        } catch (IOException | JSONException ieo) {
+//                            Log.e("Connection error:", ieo.getMessage());
+//                        }
+//            });
         });
     }
 
