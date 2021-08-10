@@ -64,33 +64,52 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class MainActivity extends AppCompatActivity {
     /**
-     * Button search this is for search button.
-     * TextView editName finding the title.
-     * Button instructions this is for help.
-     * Button author this is for showing the author name and the version number.
-     * RecyclerView articles this is for showing the retrieve data.
-     * DrawerLayout drawer this is for tool bar
-     * NavigationView navigation to go to another activity.
-     * Intent intent to go to another activity.
-     * String title article title
-     * String date article date
-     * String iconName article image
+     * Button search this is for searching the name of the article news.
      */
     Button search;
     /**
      * TextView editName finding the title.
      */
     TextView editName;
+    /**
+     * Button instructions this is for help.
+     */
     Button instructions;
+    /**
+     * Button author this is for showing the author name and the version number.
+     */
     Button author;
+    /**
+     * ProgressBar progressBar for showing the progress from 0 to 100.
+     */
     ProgressBar progressBar;
+    /**
+     * RecyclerView articles this is for showing the retrieve data.
+     */
     RecyclerView articles;
+    /**
+     * DrawerLayout drawer this is for tool bar
+     */
     DrawerLayout drawer;
+    /**
+     * NavigationView navigation to go to another activity.
+     */
     NavigationView navigation;
+    /**
+     * Intent intent to go to another activity.
+     */
     Intent intent;
-    String articleName;
+    /**
+     * String title this is for the article title
+     */
     String title;
+    /**
+     * String date this is showing the article date
+     */
     String date;
+    /**
+     * String iconName this is for article image
+     */
     String iconName;
 
     /**
@@ -151,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.nav_bus:
                         intent = new Intent(MainActivity.this, OCTranspoApp.class);
                         startActivity(intent);
-
                         break;
                 }
 
@@ -255,7 +273,7 @@ public class MainActivity extends AppCompatActivity {
 //                                textView.setVisibility(View.VISIBLE);
 //
 //                                textView = findViewById(R.id.date);
-//                                textView.setText("The Minimum Temperature is " + date);
+//                                textView.setText("The date is " + date);
 //                                textView.setVisibility(View.VISIBLE);
 //
 //
