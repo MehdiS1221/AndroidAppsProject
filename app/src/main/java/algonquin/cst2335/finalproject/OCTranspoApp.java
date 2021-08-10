@@ -1,11 +1,10 @@
 package algonquin.cst2335.finalproject;
 
 import android.app.AlertDialog;
-import android.app.Application;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -18,20 +17,31 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class OCTranspoApp extends AppCompatActivity{
     RecyclerView busList;
@@ -43,7 +53,27 @@ public class OCTranspoApp extends AppCompatActivity{
     NavigationView navigationView;
     ImageView questionMark;
     ProgressBar pb;
-
+    String routeNo = "";
+    String routeHeadings = "";
+    static String appkey = "ab27db5b435b8c8819ffb8095328e775";
+    static String appID = "223eb5c3";
+    static String busstopnumberstatic;
+    static int staticRowAdapter;
+    MyDatabaseHelper mydb;
+    Element routeHeadingEle;
+    Element routeNumEle;
+    Element directionIDEle;
+    String stopNumberForUrl;
+    Element latitudeEle;
+    Element longitudeEle;
+    Element gpsSpeedEle;
+    Element startTimeEle;
+    Element adjustedEle;
+    int rowAdapter;
+    ArrayList<Integer> directionID;
+    ArrayList<String> routeN;
+    ArrayList<String> destin;
+    myBusRouteViews myBusRouteViewss;
 
 
 
@@ -54,13 +84,23 @@ public class OCTranspoApp extends AppCompatActivity{
 
         setContentView(R.layout.octranspobusrouteapp);
 
-        //progress bar
 
+
+        //progress bar
         pb = findViewById(R.id.progressBar2);
 
 
+        //data
+        directionID = new ArrayList<Integer>();
+        routeN = new ArrayList<>();
+        destin = new ArrayList<>();
+        mydb = new MyDatabaseHelper(OCTranspoApp.this);
 
-//question alert
+
+
+
+
+        //question alert
         questionMark = findViewById(R.id.imageView2);
         questionMark.setOnClickListener(click ->
         {
@@ -82,6 +122,12 @@ public class OCTranspoApp extends AppCompatActivity{
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            /**
+             * allows for items within the navigation view to be selected and have functionality
+             * @param item
+             * @return
+             */
             @Override
             public boolean onNavigationItemSelected( MenuItem item) {
                 if (item.getItemId() == R.id.nav_bus) {
@@ -100,6 +146,8 @@ public class OCTranspoApp extends AppCompatActivity{
 
         busList = findViewById(R.id.busRouteRecyclerView);
         busList.setAdapter(new recyclerAdapter());
+        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+
         removeButton = findViewById(R.id.removeButton);
         addButton = findViewById(R.id.addButton);
         busStopEditView = findViewById(R.id.busStopEditText);
@@ -108,7 +156,7 @@ public class OCTranspoApp extends AppCompatActivity{
 
 
 
-
+//shared preferences
         SharedPreferences prefs = getSharedPreferences("MyData", Context.MODE_PRIVATE);
         String defaultValue = null;
         prefs.getString("VariableName", defaultValue);
@@ -124,11 +172,32 @@ public class OCTranspoApp extends AppCompatActivity{
             busStopNumber = busStopEditView.getText().toString();
 
             AlertDialog dialog = new AlertDialog.Builder(this)
-                    .setTitle("Delete bus stop?")
+                    .setTitle("Clear bus stop list?")
                     .setMessage("Do you want to delete the bus stop number " + busStopNumber + " ?")
                     .setPositiveButton("Yes", (dlg, select) -> {//here to delete bus stop
 
-                        Snackbar.make(addButton, "You deleted message #" + busStopNumber, Snackbar.LENGTH_LONG)
+                        mydb.deleteData();
+
+                        storeDataInArrays();
+
+
+                        busList.setAdapter(new recyclerAdapter());
+                        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+
+
+
+
+
+
+                        recyclerAdapter recyclerAdapters = new recyclerAdapter();
+                        recyclerAdapters.notifyDataSetChanged();
+                        busList.setVisibility(View.INVISIBLE);
+
+
+
+
+
+                        Snackbar.make(addButton, "You deleted bus stop " + busStopNumber + " from the list", Snackbar.LENGTH_LONG)
                                 .setAction("undo", clk -> {//undo button
 
                                 }).show();
@@ -143,13 +212,15 @@ public class OCTranspoApp extends AppCompatActivity{
 
         });
         addButton.setOnClickListener(click -> {
+
+            busList.setVisibility(View.VISIBLE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString("Name", busStopEditView.getText().toString());
             editor.apply();
 
 
             busStopNumber = busStopEditView.getText().toString();
-
+            setBusStopNumber();
             Toast toast = Toast.makeText(this, "Added bus stop "+busStopNumber+".", Toast.LENGTH_LONG);
             toast.show();
             new Downloader().execute();
@@ -161,11 +232,15 @@ public class OCTranspoApp extends AppCompatActivity{
 
                 }
 
+    /**
+     * queries the octranspo web server to obtain the bus info and input into database
+     */
                 class Downloader extends AsyncTask<Void, Integer, Integer> {
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        pb.setVisibility(View.VISIBLE);
         pb.setMax(100);
     }
 
@@ -178,23 +253,81 @@ public class OCTranspoApp extends AppCompatActivity{
 
     @Override
     protected Integer doInBackground(Void... voids) {
+//        mydb = new MyDatabaseHelper(OCTranspoApp.this);
 
-        for(int i=0; i<100;i++){
+        SQLiteDatabase db = mydb.getWritableDatabase();
+
+
+
+
+
+        for(int i=0; i<50;i++) {
             publishProgress(i);
+        }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilderFactory factory2 = DocumentBuilderFactory.newInstance();
 
             try{
-                URL url = new URL("https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID={appID}&apiKey={apiKey}&stopNo={stopNo}&format={format}");
+                URL url = new URL("https://api.octranspo1.com/v2.0/GetRouteSummaryForStop?appID="+appID+"&apiKey="+appkey+"&stopNo="+busStopNumber+"&format={format}");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = httpURLConnection.getInputStream();
-//                BufferedReader
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(inputStream);
+
+                //second url
+//                URL url2 = new URL("https://api.octranspo1.com/v2.0/GetNextTripsForStop?appID="+appID+"&apiKey="+appkey+"&stopNo="+busStopNumber+"&routeNo="+routeNumEle.getTextContent()+"&format={format}");
+//                HttpURLConnection httpURLConnection2 = (HttpURLConnection) url2.openConnection();
+//                InputStream inputStream2 = httpURLConnection2.getInputStream();
+//                DocumentBuilder builder2 = factory2.newDocumentBuilder();
+//                Document doc2 = builder2.parse(inputStream2);
+
+
+
+
+                NodeList routeList = doc.getElementsByTagName("RouteNo");
+                for(int i =0;i<routeList.getLength();i++){
+                    Node p = routeList.item(i);
+                    if(p.getNodeType()==Node.ELEMENT_NODE) {
+                        routeNumEle = (Element) p;
+
+
+
+                    }
+                    NodeList routeHeading = doc.getElementsByTagName("RouteHeading");
+                    Node D = routeHeading.item(i);
+                    if(D.getNodeType()==Node.ELEMENT_NODE){
+                        routeHeadingEle = (Element) D;
+
+
+
+                    }
+
+
+
+
+                    mydb.addBusInfo(i,routeNumEle.getTextContent(),routeHeadingEle.getTextContent());
+
+                }
+
+
+
+
 
             }catch(MalformedURLException e){
 
 
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            } catch (SAXException e) {
+                e.printStackTrace();
             }
+        for(int i=50; i<100;i++) {
+            publishProgress(i);
+            pb.setVisibility(View.INVISIBLE);
         }
+
         return null;
     }
 
@@ -202,64 +335,156 @@ public class OCTranspoApp extends AppCompatActivity{
     protected void onPostExecute(Integer integer) {
         super.onPostExecute(integer);
         Toast.makeText(getApplicationContext(), "Download finished!", Toast.LENGTH_LONG).show();
-    }
+
+        storeDataInArrays();
+        busList.setAdapter(new recyclerAdapter());
+        busList.setLayoutManager(new LinearLayoutManager(OCTranspoApp.this));
+                }
 }
 
 
-
-
-
-    private class busInfo{
-
-    }
-
+    /**
+     * inserts the items into the recyclerview
+     */
     private class myBusRouteViews extends RecyclerView.ViewHolder{
-        TextView busRoutes;
+        TextView busRoutesView;
+        TextView destinationIDView;
+        TextView busRouteNumView;
+
 
         public myBusRouteViews( View itemView) {
             super(itemView);
 
+            busRoutesView = itemView.findViewById(R.id.busRouteView);
+            destinationIDView = itemView.findViewById(R.id.destinationIDView);
+            busRouteNumView = itemView.findViewById(R.id.routeNo);
+
+
+
 
             //selecting a bus route to see details
             itemView.setOnClickListener(click -> {
-                int row = getAdapterPosition();
+                rowAdapter = getAdapterPosition();
+                setRowAdapter();
+                TopFragment topFragment = new TopFragment();
+                FragmentManager manager = getSupportFragmentManager();
 
-
+                manager.beginTransaction().add(R.id.drawerLayout, topFragment).commit();
 
             });
 
 
 
-            busRoutes = itemView.findViewById(R.id.busRouteView);
         }
     }
 
-
+    /**
+     * creates recyclerview
+     */
     private class recyclerAdapter extends RecyclerView.Adapter<myBusRouteViews>{
+
+
 
 
 
             @Override
             public myBusRouteViews onCreateViewHolder(ViewGroup parent, int viewType) {
+
                 return new myBusRouteViews(getLayoutInflater().inflate(R.layout.busroute, parent, false));
             }
 
             @Override
             public void onBindViewHolder(myBusRouteViews holder, int position) {
-                holder.busRoutes.setText("");
+                holder.busRoutesView.setText(String.valueOf(destin.get(position)));
+                holder.busRouteNumView.setText(String.valueOf(routeN.get(position)));
+                holder.destinationIDView.setText(String.valueOf(directionID.get(position)));
 
-                myBusRouteViews thisRowLayout = (myBusRouteViews) holder;
-                thisRowLayout.busRoutes.setText("");//here is where we will set the text
+
+
+
 
             }
 
             @Override
             public int getItemCount() {
-                return 0;
+                return destin.size();
             }
 
 
     }
+
+    /**
+     * stores data into arrays
+     */
+    void storeDataInArrays(){
+        Cursor cursor = mydb.readAllData();
+        if(cursor.getCount() == 0){
+            Toast.makeText(this, "No Data", Toast.LENGTH_LONG).show();
+        }else{
+            while(cursor.moveToNext()){
+                directionID.add(cursor.getInt(0));
+                routeN.add(cursor.getString(1));
+                destin.add(cursor.getString(2));
+
+
+
+
+            }
+        }
+    }
+
+    /**
+     * get row adapter for selected item
+     * @return
+     */
+    public int getRowAdapter(){
+
+
+        return staticRowAdapter;
+    }
+
+    /**
+     * get apikey
+     * @return
+     */
+    public String getKey(){
+        String key = this.appkey;
+        return key;
+    }
+
+    /**
+     * get api number
+     * @return
+     */
+    public String getApi(){
+        String api = appID;
+        return api;
+    }
+
+    /**
+     * get the bus stop number in edittext
+     * @return
+     */
+    public String getBusStopNumber(){
+
+        return busstopnumberstatic;
+    }
+
+    /**
+     * set the bus stop number
+     */
+    public void setBusStopNumber(){
+        busstopnumberstatic = this.busStopNumber;
+    }
+
+    /**
+     * set the row adapter
+     */
+    public void setRowAdapter(){
+        staticRowAdapter = this.rowAdapter;
+
+    }
+
 
 }
 

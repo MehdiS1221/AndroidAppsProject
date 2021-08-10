@@ -40,14 +40,20 @@ public class MainMenu extends AppCompatActivity {
             Intent intent = new Intent(MainMenu.this, MainActivityCarCharging.class);
             startActivity(intent);
 
+
+
+
+//        movieMenuButton.setOnClickListener(v -> {
+//            startActivity(new Intent(this, MoviesSplashActivity.class));
+//        });
+
+
+        });
         movieMenuButton.setOnClickListener(v -> {
             startActivity(new Intent(this, MoviesSplashActivity.class));
         });
 
-
-        });
-
-    }
+        }
 
 
 }

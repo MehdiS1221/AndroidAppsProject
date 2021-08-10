@@ -48,6 +48,9 @@
         <activity
             android:name=".hussein.activities.MoviesSplashActivity"
             android:theme="@style/Theme.NoActionBar" />
+        <activity
+            android:name="algonquin.cst2335.finalproject.MainActivityCarCharging"
+            android:theme="@style/Theme.NoActionBar" />
 
 
     </application>

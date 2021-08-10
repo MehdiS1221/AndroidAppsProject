@@ -5,24 +5,28 @@
     <string name="input_bus_stop">Input Bus Stop.</string>
     <string name="octranspo_app">OCTranspo App</string>
     <string name="soccer_api">Soccer API</string>
-    <string name="app_name_movies">Movies Information App</string>
-    <string name="home">Home</string>
-    <string name="saved">Saved</string>
-    <string name="exit">Exit</string>
-    <string name="change_language">Change Language</string>
-    <string name="movie_title">Movie Title</string>
-    <string name="movie">Movie</string>
-    <string name="year">year</string>
-    <string name="metascore">Metascore:</string>
-    <string name="directors">Directors:</string>
-    <string name="writers">Writers:</string>
-    <string name="actors">Actors:</string>
-    <string name="awards">Awards:</string>
+    <string name="app_name_movies" translatable="false">Movies Information App</string>
+    <string name="home" translatable="false">Home</string>
+    <string name="saved" translatable="false">Saved</string>
+    <string name="exit" translatable="false">Exit</string>
+    <string name="change_language" translatable="false">Change Language</string>
+    <string name="movie_title" translatable="false">Movie Title</string>
+    <string name="movie" translatable="false">Movie</string>
+    <string name="year" translatable="false">year</string>
+    <string name="metascore" translatable="false">Metascore:</string>
+    <string name="directors" translatable="false">Directors:</string>
+    <string name="writers" translatable="false">Writers:</string>
+    <string name="actors" translatable="false">Actors:</string>
+    <string name="awards" translatable="false">Awards:</string>
     <string name="languages">Languages:</string>
     <string name="country">Country:</string>
     <string name="reviews">Reviews</string>
     <string name="search_online">Search Online</string>
     <string name="search_saved_movies">Search Saved Movies</string>
     <string name="help">Help</string>
+    <string name="start">start</string>
+    <string name="ayham_s_sport_news_channel">ayham \'s sport news channel</string>
+    <string name="Search">Search</string>
+    <string name="Author">Author</string>
 
 </resources>

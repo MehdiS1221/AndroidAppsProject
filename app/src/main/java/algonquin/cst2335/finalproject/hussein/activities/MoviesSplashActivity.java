@@ -15,6 +15,7 @@ import algonquin.cst2335.finalproject.R;
 
 public class MoviesSplashActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
