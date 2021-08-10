@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name_movies">Movies Information App</string>
+    <string name="home">Home</string>
+    <string name="saved">Saved</string>
+    <string name="exit">Exit</string>
+    <string name="change_language">Change Language</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="movie">Movie</string>
+    <string name="year">year</string>
+    <string name="metascore">Metascore:</string>
+    <string name="directors">Directors:</string>
+    <string name="writers">Writers:</string>
+    <string name="actors">Actors:</string>
+    <string name="awards">Awards:</string>
+    <string name="languages">Languages:</string>
+    <string name="country">Country:</string>
+    <string name="reviews">Reviews</string>
+    <string name="search_online">Search Online</string>
+    <string name="search_saved_movies">Search Saved Movies</string>
+    <string name="help">Help</string>
+</resources>
